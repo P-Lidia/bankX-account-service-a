@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,9 +18,6 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "account_number", nullable = false, unique = true, length = 20)
-    private String accountNumber;
-
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -31,5 +29,19 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private AccountStatus accountStatus;
+    private Status Status;
+
+    // Оптимистическая блокировка для защиты при одновременных изменениях одной и той же записи в базе
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    // Автоматическая установка createdAt при создании
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
