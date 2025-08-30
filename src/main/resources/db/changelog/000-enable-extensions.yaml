@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 000-enable-pgcrypto
+      author: dev
+      preConditions:
+        onFail: MARK_RAN
+          - dbmsType:
+              type: postgresql
+      changes:
+        - sql:
+            splitStatements: false
+            sql: "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+      rollback:
+        - sql: "DROP EXTENSION IF EXISTS pgcrypto;"
