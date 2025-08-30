@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-accounts
+      author: dev
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column: { name: id, type: BIGSERIAL, constraints: { primaryKey: true } }
+              - column: { name: user_id, type: BIGINT, constraints: { nullable: false } }
+              - column: { name: currency, type: VARCHAR(3), constraints: { nullable: false } }
+              - column: { name: balance, type: NUMERIC(19,4), defaultValueNumeric: 0, constraints: { nullable: false } }
+              - column: { name: status, type: VARCHAR(20), defaultValue: 'ACTIVE', constraints: { nullable: false } }
+              - column: { name: version, type: BIGINT, defaultValueNumeric: 0, constraints: { nullable: false } }
+              - column: { name: created_at, type: TIMESTAMP, defaultValueComputed: NOW(), constraints: { nullable: false } }
+      rollback:
+        - dropTable:
+            tableName: accounts
+            cascadeConstraints: true
+
+  - changeSet:
+      id: 001-create-account-history
+      author: dev
+      changes:
+        - createTable:
+            tableName: account_history
+            columns:
+              - column: { name: id, type: BIGSERIAL, constraints: { primaryKey: true } }
+              - column: { name: account_id, type: BIGINT, constraints: { nullable: false } }
+              - column: { name: type, type: VARCHAR(20), constraints: { nullable: false } }
+              - column: { name: amount, type: NUMERIC(19,4), constraints: { nullable: false } }
+              - column: { name: currency, type: VARCHAR(3), constraints: { nullable: false } }
+              - column: { name: transfer_id, type: UUID, constraints: { nullable: false } }
+              - column: { name: created_at, type: TIMESTAMP, defaultValueComputed: NOW(), constraints: { nullable: false } }
+      rollback:
+        - dropTable:
+            tableName: account_history
+            cascadeConstraints: true

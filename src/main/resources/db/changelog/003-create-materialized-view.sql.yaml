@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-mv-saldo
+      author: dev
+      runInTransaction: false
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              CREATE MATERIALIZED VIEW IF NOT EXISTS saldo_by_user_currency AS
+              SELECT user_id, currency, SUM(balance) AS total_balance
+              FROM accounts
+              GROUP BY user_id, currency;
+      rollback:
+        - sql: "DROP MATERIALIZED VIEW IF EXISTS saldo_by_user_currency;"

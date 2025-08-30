@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-indexes-accounts
+      author: dev
+      runInTransaction: false
+      changes:
+        - sql:
+            sql: "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_accounts_user_currency ON accounts (user_id, currency);"
+      rollback:
+        - sql: "DROP INDEX IF EXISTS idx_accounts_user_currency;"
+
+  - changeSet:
+      id: 002-indexes-history
+      author: dev
+      runInTransaction: false
+      changes:
+        - sql:
+            sql: "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_acc_hist_account_created ON account_history (account_id, created_at);"
+        - sql:
+            sql: "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_acc_hist_transfer ON account_history (transfer_id);"
+      rollback:
+        - sql: "DROP INDEX IF EXISTS idx_acc_hist_account_created;"
+        - sql: "DROP INDEX IF EXISTS idx_acc_hist_transfer;"
