@@ -1,6 +1,6 @@
 package com.itgirl.account_service_a.dto;
 
-import com.itgirl.account_service_a.model.Status;
+import com.itgirl.account_service_a.model.AccountStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public class AccountDTO {
     private Long userId;
     private String currency;
     private BigDecimal balance;
-    private Status status;
+    private AccountStatus Status;
     private Long version;
     private LocalDateTime createdAt;
 }
