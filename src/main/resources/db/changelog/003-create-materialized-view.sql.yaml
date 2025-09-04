@@ -1,11 +1,12 @@
 databaseChangeLog:
   - changeSet:
-      id: 003-create-mv-saldo
+      id: 004-create-mv-saldo
       author: dev
       runInTransaction: false
       changes:
         - sql:
             splitStatements: false
+            stripComments: true
             sql: |
               CREATE MATERIALIZED VIEW IF NOT EXISTS saldo_by_user_currency AS
               SELECT user_id, currency, SUM(balance) AS total_balance

@@ -1,6 +1,6 @@
 package com.itgirl.account_service_a.model;
 
-public enum Status {
+public enum AccountStatus {
     ACTIVE,
     BLOCKED,
     CLOSED

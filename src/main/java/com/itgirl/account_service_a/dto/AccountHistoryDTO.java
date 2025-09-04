@@ -14,8 +14,8 @@ import java.util.UUID;
 @Builder
 
 public class AccountHistoryDTO {
-    private Long id;
-    private Long accountId;
+    private UUID id;
+    private UUID accountId;
     private OperationType type;
     private BigDecimal amount;
     private String currency;
