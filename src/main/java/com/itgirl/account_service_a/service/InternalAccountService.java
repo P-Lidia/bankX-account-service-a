@@ -20,7 +20,7 @@ public class InternalAccountService {
     private final AccountHistoryRepository accountHistoryRepository;
 
     @Transactional
-    public AccountHistory reserveFunds(Long accountId, BigDecimal amount) { //исправить тип accountId, если поменяем на UUID
+    public AccountHistory reserveFunds(UUID accountId, BigDecimal amount) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found: " + accountId));
 
         if (account.getBalance().compareTo(amount) < 0) {
@@ -42,7 +42,7 @@ public class InternalAccountService {
     }
 
     @Transactional
-    public AccountHistory releaseFunds(Long accountId, BigDecimal amount, UUID transferId) { //исправить тип accountId, если поменяем на UUID
+    public AccountHistory releaseFunds(UUID accountId, BigDecimal amount, UUID transferId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found: " + accountId));
 
         account.setBalance(account.getBalance().add(amount));
@@ -60,7 +60,7 @@ public class InternalAccountService {
     }
 
     @Transactional
-    public AccountHistory[] completeTransfer(Long fromAccountId, Long toAccountId, BigDecimal amount) { //исправить тип accountId, если поменяем на UUID
+    public AccountHistory[] completeTransfer(UUID fromAccountId, UUID toAccountId, BigDecimal amount) {
         Account fromAccount = accountRepository.findById(fromAccountId)
                 .orElseThrow(() -> new RuntimeException("Sender account not found: " + fromAccountId));
 

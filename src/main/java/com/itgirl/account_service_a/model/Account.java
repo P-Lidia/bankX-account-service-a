@@ -17,10 +17,13 @@ import java.util.UUID;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
+
+    @Column(name = "account_number", nullable = false, unique = true, length = 20)
+    private String accountNumber;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;

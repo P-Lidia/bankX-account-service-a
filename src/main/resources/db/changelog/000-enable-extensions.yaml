@@ -3,9 +3,9 @@ databaseChangeLog:
       id: 000-enable-pgcrypto
       author: dev
       preConditions:
-        onFail: MARK_RAN
-          - dbmsType:
-              type: postgresql
+        - dbms:
+            type: postgresql
+          onFail: MARK_RAN
       changes:
         - sql:
             splitStatements: false
