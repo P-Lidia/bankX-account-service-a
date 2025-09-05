@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
@@ -13,4 +14,6 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     @Query("SELECT COALESCE(SUM(a.balance), 0) FROM Account a WHERE a.userId = :userId AND a.currency = :currency")
     BigDecimal totalByUserAndCurrency(@Param("userId") UUID userId, @Param("currency") String currency);
+
+    Optional<Account> findByAccountNumber(String accountNumber);
 }
