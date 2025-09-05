@@ -18,10 +18,10 @@ public class AccountHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(name = "account_id", nullable = false)
-    private Long accountId;
+    private UUID accountId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)

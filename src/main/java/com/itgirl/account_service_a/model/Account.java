@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,10 +17,13 @@ import java.time.LocalDateTime;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
+
+    @Column(name = "account_number", nullable = false, unique = true, length = 20)
+    private String accountNumber;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
@@ -29,7 +33,7 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status Status;
+    private AccountStatus Status;
 
     // Оптимистическая блокировка для защиты при одновременных изменениях одной и той же записи в базе
     @Version
