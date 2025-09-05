@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 
 public class ReleaseRequestDTO {
-    private Long id;
+    private UUID id;
     private String currency;
     private BigDecimal amount;
     private UUID transferId;
