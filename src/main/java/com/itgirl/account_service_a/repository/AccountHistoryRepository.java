@@ -10,6 +10,10 @@ import java.util.UUID;
 
 public interface AccountHistoryRepository extends JpaRepository<AccountHistory, UUID> {
     List<AccountHistory> findByAccountIdOrderByCreatedAtDesc(UUID accountId);
+
     boolean existsByAccountIdAndTransferIdAndType(UUID accountId, UUID transferId, OperationType type);
+
     List<AccountHistory> findByTransferId(UUID transferId);
+
+    List<AccountHistory> findByAccountId(UUID id);
 }
