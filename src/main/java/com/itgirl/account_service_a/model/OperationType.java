@@ -4,6 +4,5 @@ public enum OperationType {
     DEBIT,
     CREDIT,
     RESERVE,
-    RELEASE,
-    COMMIT
+    RELEASE
 }

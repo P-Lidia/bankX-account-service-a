@@ -1,11 +1,13 @@
 package com.itgirl.account_service_a.service;
 
+import com.itgirl.account_service_a.exception.AccountNotFoundException;
 import com.itgirl.account_service_a.model.Account;
 import com.itgirl.account_service_a.model.AccountHistory;
 import com.itgirl.account_service_a.model.OperationType;
 import com.itgirl.account_service_a.repository.AccountHistoryRepository;
 import com.itgirl.account_service_a.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +21,13 @@ public class InternalAccountService {
     private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public AccountHistory reserveFunds(UUID accountId, BigDecimal amount) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found: " + accountId));
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
 
         if (account.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient funds for reservation");
+            throw new IllegalStateException("Insufficient funds for reservation");
         }
 
         account.setBalance(account.getBalance().subtract(amount));
@@ -41,9 +44,10 @@ public class InternalAccountService {
         return accountHistoryRepository.save(history);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public AccountHistory releaseFunds(UUID accountId, BigDecimal amount, UUID transferId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found: " + accountId));
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
 
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
@@ -59,44 +63,19 @@ public class InternalAccountService {
         return accountHistoryRepository.save(history);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
-    public AccountHistory[] completeTransfer(UUID fromAccountId, UUID toAccountId, BigDecimal amount) {
-        Account fromAccount = accountRepository.findById(fromAccountId)
-                .orElseThrow(() -> new RuntimeException("Sender account not found: " + fromAccountId));
+    public AccountHistory commitFunds(UUID accountId, BigDecimal amount, UUID transferId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
 
-        Account toAccount = accountRepository.findById(toAccountId)
-                .orElseThrow(() -> new RuntimeException("Receiver account not found: " + fromAccountId));
-
-        if (fromAccount.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient funds for transfer");
-        }
-
-        UUID transferId = UUID.randomUUID();
-
-        // DEBIT с отправителя
-        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
-        accountRepository.save(fromAccount);
-        AccountHistory debitHistory = AccountHistory.builder()
-                .accountId(fromAccount.getId())
+        AccountHistory history = AccountHistory.builder()
+                .accountId(accountId)
                 .type(OperationType.DEBIT)
                 .amount(amount)
-                .currency(fromAccount.getCurrency())
+                .currency(account.getCurrency())
                 .transferId(transferId)
                 .build();
-       accountHistoryRepository.save(debitHistory);
 
-       // CREDIT получателю
-        toAccount.setBalance(toAccount.getBalance().add(amount));
-        accountRepository.save(toAccount);
-        AccountHistory creditHistory = AccountHistory.builder()
-                .accountId(toAccount.getId())
-                .type(OperationType.CREDIT)
-                .amount(amount)
-                .currency(toAccount.getCurrency())
-                .transferId(transferId)
-                .build();
-        accountHistoryRepository.save(creditHistory);
-
-        return new AccountHistory[]{debitHistory, creditHistory};
+        return accountHistoryRepository.save(history);
     }
 }

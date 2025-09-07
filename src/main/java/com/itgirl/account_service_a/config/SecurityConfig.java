@@ -1,6 +1,6 @@
 package com.itgirl.account_service_a.config;
 
-import com.itgirl.account_service_a.security.HeaderAuthenticationFilter;
+import com.itgirl.account_service_a.filter.HeaderAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
