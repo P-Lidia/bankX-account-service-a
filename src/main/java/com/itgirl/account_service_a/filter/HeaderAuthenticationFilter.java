@@ -1,4 +1,4 @@
-package com.itgirl.account_service_a.security;
+package com.itgirl.account_service_a.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
