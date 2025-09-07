@@ -8,12 +8,18 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
                   constraints:
                     primaryKey: true
               - column:
                   name: user_id
-                  type: BIGINT
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_number
+                  type: VARCHAR(20)
                   constraints:
                     nullable: false
               - column:
@@ -59,12 +65,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
                   constraints:
                     primaryKey: true
               - column:
                   name: account_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:
@@ -93,6 +100,12 @@ databaseChangeLog:
                   defaultValueComputed: NOW()
                   constraints:
                     nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: account_history
+            baseColumnNames: account_id
+            referencedTableName: accounts
+            referencedColumnNames: id
+            constraintName: fk_account_history_account
       rollback:
         - dropTable:
             tableName: account_history

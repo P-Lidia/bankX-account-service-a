@@ -5,8 +5,10 @@ databaseChangeLog:
       runInTransaction: false
       changes:
         - sql: "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_accounts_user_currency ON accounts (user_id, currency);"
+        - sql: "CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS ux_accounts_account_number ON accounts (account_number);"
       rollback:
         - sql: "DROP INDEX CONCURRENTLY IF EXISTS idx_accounts_user_currency;"
+        - sql: "DROP INDEX CONCURRENTLY IF EXISTS ux_accounts_account_number;"
 
   - changeSet:
       id: 003-indexes-history

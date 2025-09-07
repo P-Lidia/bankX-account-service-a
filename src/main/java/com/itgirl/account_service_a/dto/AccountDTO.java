@@ -10,14 +10,15 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor @Builder
+@AllArgsConstructor
+@Builder
 
 public class AccountDTO {
     private UUID id;
     private UUID userId;
     private String currency;
     private BigDecimal balance;
-    private AccountStatus Status;
+    private AccountStatus status;
     private Long version;
     private LocalDateTime createdAt;
 }
