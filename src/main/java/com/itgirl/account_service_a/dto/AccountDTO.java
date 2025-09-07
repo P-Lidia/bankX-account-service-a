@@ -17,7 +17,7 @@ public class AccountDTO {
     private UUID userId;
     private String currency;
     private BigDecimal balance;
-    private AccountStatus Status;
+    private AccountStatus status;
     private Long version;
     private LocalDateTime createdAt;
 }

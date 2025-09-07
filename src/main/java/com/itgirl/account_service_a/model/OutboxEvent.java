@@ -1,6 +1,5 @@
 package com.itgirl.account_service_a.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.OffsetDateTime;
@@ -8,7 +7,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "outbox")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OutboxEvent {
 
     @Id
@@ -27,9 +30,11 @@ public class OutboxEvent {
     @Column(name = "payload", columnDefinition = "jsonb", nullable = false)
     private String payload;
 
+    @Builder.Default
     @Column(name = "status", length = 20)
     private String status = "NEW";
 
+    @Builder.Default
     @Column(name = "attempt_count")
     private int attemptCount = 0;
 

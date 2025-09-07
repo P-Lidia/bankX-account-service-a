@@ -1,16 +1,63 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-create-mv-saldo
+      id: 004-drop-mv-saldo-by-user-currency
+      author: dev
+      changes:
+        - sql:
+            sql: "DROP MATERIALIZED VIEW IF EXISTS saldo_by_user_currency CASCADE;"
+      rollback:
+        - sql:
+            sql: |
+              CREATE MATERIALIZED VIEW saldo_by_user_currency AS
+              SELECT
+                gen_random_uuid() AS id,
+                user_id,
+                currency,
+                SUM(balance) AS total_balance
+              FROM accounts
+              GROUP BY user_id, currency;
+
+  - changeSet:
+      id: 005-alter-balance-column
+      author: dev
+      changes:
+        - sql:
+            sql: "ALTER TABLE accounts ALTER COLUMN balance TYPE numeric(38,2);"
+      rollback:
+        - sql:
+            sql: "ALTER TABLE accounts ALTER COLUMN balance TYPE numeric(19,4);"
+
+  - changeSet:
+      id: 006-create-mv-saldo-by-user-currency
       author: dev
       runInTransaction: false
       changes:
         - sql:
             splitStatements: false
-            stripComments: true
             sql: |
-              CREATE MATERIALIZED VIEW IF NOT EXISTS saldo_by_user_currency AS
-              SELECT user_id, currency, SUM(balance) AS total_balance
+              CREATE MATERIALIZED VIEW saldo_by_user_currency AS
+              SELECT
+                gen_random_uuid() AS id,
+                user_id,
+                currency,
+                SUM(balance) AS total_balance
               FROM accounts
               GROUP BY user_id, currency;
+
+        - sql:
+            sql: |
+              CREATE UNIQUE INDEX ux_saldo_mv_id
+              ON saldo_by_user_currency (id);
+
       rollback:
+        - sql: "DROP INDEX IF EXISTS ux_saldo_mv_id;"
         - sql: "DROP MATERIALIZED VIEW IF EXISTS saldo_by_user_currency;"
+
+  - changeSet:
+      id: 007-refresh-mv-saldo
+      author: dev
+      runAlways: true
+      runInTransaction: false
+      changes:
+        - sql:
+            sql: "REFRESH MATERIALIZED VIEW CONCURRENTLY saldo_by_user_currency;"
