@@ -1,3 +1,6 @@
+server:
+  port: 8083
+
 topics:
   reserve: account.reserve
   commit: account.commit

@@ -23,7 +23,7 @@ public class Account {
     private String accountNumber;
 
     @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    private Long userId;
 
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;

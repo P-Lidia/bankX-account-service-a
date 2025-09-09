@@ -15,7 +15,8 @@ import java.util.UUID;
 
 public class AccountDTO {
     private UUID id;
-    private UUID userId;
+    private Long userId;
+    private String accountNumber;
     private String currency;
     private BigDecimal balance;
     private AccountStatus status;

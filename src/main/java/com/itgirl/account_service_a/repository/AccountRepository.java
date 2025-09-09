@@ -10,10 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
-    List<Account> findByUserIdAndCurrency(UUID userId, String currency);
+    List<Account> findByUserIdAndCurrency(Long userId, String currency);
 
     @Query("SELECT COALESCE(SUM(a.balance), 0) FROM Account a WHERE a.userId = :userId AND a.currency = :currency")
-    BigDecimal totalByUserAndCurrency(@Param("userId") UUID userId, @Param("currency") String currency);
+    BigDecimal totalByUserAndCurrency(@Param("userId") Long userId, @Param("currency") String currency);
 
     Optional<Account> findByAccountNumber(String accountNumber);
 }
