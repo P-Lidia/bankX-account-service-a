@@ -1,6 +1,7 @@
 package com.itgirl.account_service_a.service;
 
 import com.itgirl.account_service_a.exception.AccountNotFoundException;
+import com.itgirl.account_service_a.exception.UnsufficientBalanceException;
 import com.itgirl.account_service_a.model.Account;
 import com.itgirl.account_service_a.model.AccountHistory;
 import com.itgirl.account_service_a.model.OperationType;
@@ -27,7 +28,7 @@ public class InternalAccountService {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
 
         if (account.getBalance().compareTo(amount) < 0) {
-            throw new IllegalStateException("Insufficient funds for reservation");
+            throw new UnsufficientBalanceException();
         }
 
         account.setBalance(account.getBalance().subtract(amount));

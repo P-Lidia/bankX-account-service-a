@@ -24,14 +24,14 @@ public class AccountController {
     private final AccountService accountService;
     private final AccountHistoryRepository accountHistoryRepository;
 
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/{accountId}/balance")
     public ResponseEntity<BigDecimal> getBalance(@PathVariable UUID accountId) {
         Account account = accountService.getAccountById(accountId);
         return ResponseEntity.ok(account.getBalance());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{accountId}/history")
     public ResponseEntity<List<AccountHistory>> getAccountHistory(@PathVariable UUID accountId) {
         Account account = accountService.getAccountById(accountId);
@@ -44,20 +44,20 @@ public class AccountController {
     public ResponseEntity<Account> createAccount(@Valid @RequestBody CreateAccountDTO dto) {
         Account account = Account.builder()
                 .userId(dto.getUserId())
+                .accountNumber(dto.getAccountNumber())
                 .currency(dto.getCurrency())
                 .balance(dto.getBalance())
                 .Status(AccountStatus.ACTIVE)
                 .build();
         Account created = accountService.createAccount(account);
+
         return ResponseEntity.ok(created);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{accountId}/close")
     public ResponseEntity<Account> closeAccount(@PathVariable UUID accountId) {
-        Account account = accountService.getAccountById(accountId);
-        account.setStatus(AccountStatus.CLOSED);
-        Account updated = accountService.createAccount(account);
-        return ResponseEntity.ok(updated);
+        Account closed = accountService.closeAccount(accountId);
+        return ResponseEntity.ok(closed);
     }
 }

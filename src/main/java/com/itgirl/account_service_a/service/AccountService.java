@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -24,10 +23,11 @@ public class AccountService {
     }
 
     private boolean hasRole(String role) {
-        return getAuth().getAuthorities().contains(new SimpleGrantedAuthority(role));
+        // Добавляем префикс ROLE_ для совместимости
+        return getAuth().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
-     // Получение аккаунта: доступно USER (только свой) и ADMIN (любой)
+    // Получение аккаунта: доступно USER (только свой) и ADMIN (любой)
     public Account getAccountById(UUID accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
@@ -37,7 +37,7 @@ public class AccountService {
         }
 
         // USER может получить только свой аккаунт
-        UUID currentUserId = (UUID) getAuth().getPrincipal();
+        Long currentUserId = (Long) getAuth().getPrincipal();
         if (!account.getUserId().equals(currentUserId)) {
             throw new SecurityException("Access denied: user cannot access this account");
         }
@@ -53,7 +53,7 @@ public class AccountService {
             return accountRepository.save(account);
         }
 
-        UUID currentUserId = (UUID) getAuth().getPrincipal();
+        Long currentUserId = (Long) getAuth().getPrincipal();
         account.setUserId(currentUserId);
         return accountRepository.save(account);
     }
