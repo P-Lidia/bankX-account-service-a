@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class KafkaAccountProducer {
@@ -16,9 +18,17 @@ public class KafkaAccountProducer {
     private final KafkaTopicsProperties topics;
 
     public void sendReserve(ReserveRequestDTO reserveRequestDTO) {
+        // Если transferId не передан — генерируем новый
+        UUID transferId = reserveRequestDTO.getTransferId() != null
+                ? reserveRequestDTO.getTransferId()
+                : UUID.randomUUID();
+
+        // Обновляем DTO с новым transferId
+        reserveRequestDTO.setTransferId(transferId);
+
         kafkaTemplate.send(
                 topics.getReserve(),
-                reserveRequestDTO.getTransferId().toString(),
+                transferId.toString(),   // ключ — transferId
                 reserveRequestDTO
         );
     }

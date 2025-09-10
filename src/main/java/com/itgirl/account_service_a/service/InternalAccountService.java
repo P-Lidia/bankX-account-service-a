@@ -22,7 +22,7 @@ public class InternalAccountService {
     private final AccountRepository accountRepository;
     private final AccountHistoryRepository accountHistoryRepository;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AccountHistory reserveFunds(UUID accountId, BigDecimal amount) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
@@ -45,7 +45,7 @@ public class InternalAccountService {
         return accountHistoryRepository.save(history);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AccountHistory releaseFunds(UUID accountId, BigDecimal amount, UUID transferId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
@@ -64,7 +64,7 @@ public class InternalAccountService {
         return accountHistoryRepository.save(history);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AccountHistory commitFunds(UUID accountId, BigDecimal amount, UUID transferId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
