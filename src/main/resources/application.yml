@@ -8,7 +8,7 @@ topics:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/accountdb
+    url: jdbc:postgresql://host.docker.internal:5432/accountdb
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,17 +16,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    liquibase:
+      enabled: true
     properties:
       hibernate:
         use_new_id_generator_mappings: true
 
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: account-service-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
