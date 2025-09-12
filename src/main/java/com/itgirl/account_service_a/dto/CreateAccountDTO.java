@@ -14,7 +14,10 @@ import java.util.UUID;
 public class CreateAccountDTO {
 
     @NotNull(message = "userId cannot be null")
-    private UUID userId;
+    private Long userId;
+
+    @NotNull(message = "accountNumber cannot be blank")
+    private String accountNumber;
 
     @NotBlank(message = "currency cannot be blank")
     @Size(min = 3, max = 3, message = "currency must be 3 letters")

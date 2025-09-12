@@ -19,7 +19,7 @@ public class InternalAccountController {
     private final InternalAccountService internalAccountService;
 
     // Резервирование средств
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/reserve")
     public ResponseEntity<AccountHistory> reserveFunds(@Valid @RequestBody AccountOperationDTO dto) {
         return ResponseEntity.ok(
@@ -28,7 +28,7 @@ public class InternalAccountController {
     }
 
     // Подтверждение списания (commit)
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/commit")
     public ResponseEntity<AccountHistory> commitFunds(@Valid @RequestBody AccountOperationDTO dto) {
         if (dto.getTransferId() == null) {
@@ -40,7 +40,7 @@ public class InternalAccountController {
     }
 
     // Release — освобождение зарезервированных средств
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/release")
     public ResponseEntity<AccountHistory> releaseFunds(@Valid @RequestBody AccountOperationDTO dto) {
         if (dto.getTransferId() == null) {
