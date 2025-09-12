@@ -1,10 +1,10 @@
 package com.itgirl.account_service_a.kafka;
 
-import com.itgirl.account_service_a.config.KafkaTopicsProperties;
 import com.itgirl.account_service_a.dto.ReserveRequestDTO;
 import com.itgirl.account_service_a.dto.CommitRequestDTO;
 import com.itgirl.account_service_a.dto.ReleaseRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -15,27 +15,33 @@ import java.util.UUID;
 public class KafkaAccountProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final KafkaTopicsProperties topics;
+
+    @Value("${topics.reserve}")
+    private String reserveTopic;
+
+    @Value("${topics.commit}")
+    private String commitTopic;
+
+    @Value("${topics.release}")
+    private String releaseTopic;
 
     public void sendReserve(ReserveRequestDTO reserveRequestDTO) {
-        // Если transferId не передан — генерируем новый
         UUID transferId = reserveRequestDTO.getTransferId() != null
                 ? reserveRequestDTO.getTransferId()
                 : UUID.randomUUID();
 
-        // Обновляем DTO с новым transferId
         reserveRequestDTO.setTransferId(transferId);
 
         kafkaTemplate.send(
-                topics.getReserve(),
-                transferId.toString(),   // ключ — transferId
+                reserveTopic,
+                transferId.toString(),
                 reserveRequestDTO
         );
     }
 
     public void sendCommit(CommitRequestDTO commitRequestDTO) {
         kafkaTemplate.send(
-                topics.getCommit(),
+                commitTopic,
                 commitRequestDTO.getTransferId().toString(),
                 commitRequestDTO
         );
@@ -43,7 +49,7 @@ public class KafkaAccountProducer {
 
     public void sendRelease(ReleaseRequestDTO releaseRequestDTO) {
         kafkaTemplate.send(
-                topics.getRelease(),
+                releaseTopic,
                 releaseRequestDTO.getTransferId().toString(),
                 releaseRequestDTO
         );
