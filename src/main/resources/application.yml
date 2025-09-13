@@ -8,7 +8,7 @@ topics:
 
 spring:
   datasource:
-    url: jdbc:postgresql://host.docker.internal:5432/accountdb
+    url: jdbc:postgresql://db:5432/accountdb
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -21,4 +21,5 @@ spring:
     properties:
       hibernate:
         use_new_id_generator_mappings: true
-
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}

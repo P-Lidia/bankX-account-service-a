@@ -23,10 +23,10 @@ public class KafkaConfig {
     public ProducerFactory<String, Object> producerFactory(org.springframework.core.env.Environment env) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                env.getProperty("spring.kafka.bootstrap-servers","localhost:9092"));
+                env.getProperty("spring.kafka.bootstrap-servers","kafka:9092"));
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false); // безопаснее
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         return new DefaultKafkaProducerFactory<>(props);
     }
 
@@ -38,13 +38,14 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, Object> consumerFactory(org.springframework.core.env.Environment env) {
         JsonDeserializer<Object> deserializer = new JsonDeserializer<>();
-        deserializer.addTrustedPackages("*");
+        deserializer.addTrustedPackages("com.itgirl.account_service_a.dto");
 
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                env.getProperty("spring.kafka.bootstrap-servers","localhost:9092"));
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "account-a");
+                env.getProperty("spring.kafka.bootstrap-servers", "kafka:9092"));
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "account-service-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
 
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
     }
